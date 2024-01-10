@@ -19,10 +19,10 @@
       <div class="square" style="--i:4;"></div>
 
       <div class="register-container">
-        <el-form ref="ruleForm"
+        <el-form
           :model="ruleForm"
-          :rules="registerRules"
           class="register-form"
+          :rules="rules"
           label-position="left">
 
           <div class="title-container">
@@ -75,7 +75,7 @@
           <el-form-item>
             <el-button
               type="primary"
-              @click="register"
+              @click="handleRegister"
               class="el-button"
             >注册</el-button>
           </el-form-item>
@@ -88,70 +88,55 @@
     </div>
   </section>
 </template>
-<script>
+<script setup>
 
 import {register} from "@/api/login";
 import router from "@/router";
-export default {
-  name: 'Register',
-  data(){
-    return{
-      ruleForm: {
-        username: '',
-        password: '',
-        cPassword: ''
-      },
-      registerRules: {
-        username: [{
-          required: true,
-          type: 'string',
-          message: '请输入用户名',
-          trigger: 'blur'
-        }],
-        password: [{
-          required: true,
-          message: '创建密码',
-          trigger: 'blur'
-        }, { pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/, message: '密码必须同时包含数字与字母,且长度为 8-20位' }],
-        cPassword: [{
-          required: true,
-          message: '确认密码',
-        },{
-          validator: (rule, value, callback) => {
-            if (value === '') callback(new Error('请再次输入密码'))
-            else if (value !== this.ruleForm.password) callback(new Error('两次输入密码不一致'))
-            else callback()
-          },
-          trigger: 'blur'
-        }]
-      }
-    }
-  },
-  methods: {
-    register: function (){
-      this.$refs['ruleForm'].validate((valid) =>{
-        if (valid) {
-          const user = {
-            username: this.ruleForm.username,
-            password: this.ruleForm.password
-          }
-          register(user).then(res => {
-            this.$message({
-              showClose: true,
-              message: '注册成功，跳转到登录界面',
-              type: 'success'
-            })
-            setTimeout(() => {
-              router.push('/')
-            }, 2000)
-          }).catch(err => {
-            console.log(err.response)
-          })
-        }
-      })
-    }
+import {ElMessage} from "element-plus";
+
+const ruleForm = reactive({
+  username: '',
+  password: '',
+  cPassword: ''
+})
+
+const validateConfirm = (rule, value, callback)=>{
+  if (ruleForm.cPassword === '') {
+    callback(new Error('Please input the password again'))
+  } else if (ruleForm.cPassword!== ruleForm.password) {
+    callback(new Error("Two inputs don't match!"))
+  } else {
+    callback()
   }
 }
+
+const rules = reactive({
+  username: [{required: true, message: '用户名不得为空!'}],
+  password: [{required: true, message: '密码不得为空!'}],
+  confirm: [{validator:validateConfirm, message: '两次输入密码不一致!'}]
+})
+
+function handleRegister(){
+  register({
+    name: ruleForm.username,
+    password: ruleForm.password
+  }).then(res => {
+    if (res.status === 200){
+      ElMessage({
+        message:"注册完成，返回登录",
+        type: "success",
+        onClose: () =>{router.push('/')}
+      })
+    }
+  }).catch(err => {
+    ElMessage({
+      message:"注册失败",
+      type:"error"
+    })
+    console.log(err)
+  })
+}
+
 </script>
 
 <style scoped>

@@ -1,9 +1,7 @@
 import axios from "axios";
-import store from '@/store'
-import {VueAxios} from "@/utils/axios";
-// import storage from 'store'
-// import { ElNotification } from 'element-plus'
-// import { VueAxios } from './axios'
+import router from "@/router";
+import {ElMessage} from "element-plus";
+
 
 const request = axios.create({
     baseURL: 'http://127.0.0.1:3456',
@@ -11,38 +9,41 @@ const request = axios.create({
 })
 
 request.interceptors.request.use(
-    config =>{
-        if (store.state.token){
-            config.headers.Authorization = `token ${store.state.token}`
+    config => {
+        if(localStorage.token){
+            config.headers.Authorization=localStorage.getItem("token")
         }
+        console.log(config)
         return config
+    },
+    error => {
+        return Promise.reject(error)
     }
 )
 
 request.interceptors.response.use(
-    response =>{
-        return response
+    res=>{
+        if(res.data.code===20006){
+            ElMessage({
+                message:"登录过期，请重新登录",
+                type:"error"
+            })
+            localStorage.removeItem("token")
+            router.push("/login")
+            return res
+        }
+        return res
     },
     error => {
-        if (error.response){
-            switch (error.response.status){
-                case 401:
-                    store.dispatch('UserLogout').then(() => {
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 1500)
-                    })
-            }
+        if(error.response.status===401){
+            ElMessage({
+                message:"登录过期，请重新登录",
+                type:"error"
+            })
+            localStorage.removeItem("token")
+            router.push('/login')
         }
-        return Promise.reject(error.response)
     }
 )
-
-const installer = {
-    vm: {},
-    install (Vue) {
-        Vue.use(VueAxios, request)
-    }
-}
 
 export default request

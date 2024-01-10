@@ -19,10 +19,10 @@
       <div class="square" style="--i:4;"></div>
 
       <div class="login-container">
-        <el-form ref="loginForm"
+        <el-form
                  :model="loginForm"
-                 :rules="loginRules"
                  class="login-form"
+                 :rules="rules"
                  label-position="left">
           <div class="title-container">
             <h3 class="title">欢迎使用</h3>
@@ -36,7 +36,6 @@
               name="username"
               type="text"
               tabindex="1"
-              autocomplete="on"
             >
               <template #prefix>
                 <i-ep-user-filled></i-ep-user-filled>
@@ -46,14 +45,11 @@
 
           <el-form-item prop="password">
             <el-input
-                :key="passwordType"
                 ref="password"
                 v-model="loginForm.password"
-                :type="passwordType"
                 placeholder="密码"
                 name="password"
                 tabindex="2"
-                autocomplete="on"
                 @keyup.enter.native="handleLogin"
             >
               <template #prefix>
@@ -64,7 +60,6 @@
 
           <el-form-item>
             <el-button
-                :loading="loading"
                 type="primary"
                 class="el-button"
                 @click.native.prevent="handleLogin"
@@ -79,55 +74,37 @@
     </div>
   </section>
 </template>
-<script>
+<script setup>
   import {login} from "@/api/login";
   import router from "@/router";
-  export default {
-    name: 'Login',
-    data(){
-      return{
-        loginForm:{
-          username: '',
-          password: ''
-        },
-        loginRules:{
-          username: [{
-            type: 'string', required: true, trigger: 'blur', message: '请输入用户名'
-          }],
-          password: [{
-            required: true,
-            message: '密码',
-            trigger: 'blur'
-          },{
-            pattern :  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/, message: '密码必须同时包含数字与字母,且长度为 8-20位'
-          }]
-        },
-        loading: false,
-        passwordType: 'password'
-      }
-    },
-    methods:{
-      handleLogin(){
-        this.$refs.loginForm.validate((valid) => {
-          if (valid) {
-            login(this.loginForm).then((data) => {
-              this.$message({
-                showClose: true,
-                type: "success",
-                message: '成功'
-              })
-              let token = data.request.token
-              let username = data.request.username
-              this.$store.dispatch('Login', token)
-              this.$store.dispatch('UserName', username)
-              router.push('/home')
-            }).catch((err) => {
-              console.log(err)
-            })
-          }
-        })
-      }
-    }
+  import {ElMessage} from "element-plus";
+
+  const loginForm = reactive({
+    username: '',
+    password: ''
+  })
+  const rules = reactive({
+    username: [{required: true, message: '用户名不得为空!'}],
+    password: [{required: true, message: '密码不得为空!'}],
+  })
+
+  function handleLogin(){
+    login({
+      name: loginForm.username,
+      password: loginForm.password}).then(res =>{
+        if (res.status === 200) {
+          let data = res.data.data
+          localStorage.setItem("token", data['token'])
+          console.log("set token: " + data['token'])
+          ElMessage({
+            message: "登录成功!即将前往主界面",
+            type:'success',
+            onClose: ()=>{
+              router.push("/main")
+            }
+          })
+        }
+    })
   }
 </script>
 <style scoped>

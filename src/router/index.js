@@ -23,7 +23,7 @@ const router = createRouter({
       component: ShowContent,
       name: 'showContent',
       meta: {
-        requiresAuth: false
+        requiresAuth: true
       }
     },
     {
@@ -53,7 +53,7 @@ const router = createRouter({
         }
       ],
       meta: {
-        requiresAuth: false
+        requiresAuth: true
       }
     }
   ]
@@ -67,9 +67,9 @@ router.beforeEach((to, from)=>{
         type:"error"
       })
       return {
-        name:'login',
+        name:'Login',
         redirect: {
-          name: to.name
+          path: '/'
         }
       }
     }
