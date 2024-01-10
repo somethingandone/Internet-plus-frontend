@@ -184,13 +184,7 @@ export default {
   width: 100%;
   padding: 40px;
 
-  el-input {
-    height: 38px;
 
-    input {
-      height: 38px;
-    }
-  }
 }
 .tips {
   float: right;
