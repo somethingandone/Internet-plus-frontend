@@ -1,22 +1,19 @@
 <template>
   <div id="app">
-    <home />
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component"/>
+      </keep-alive>
+    </router-view>
+
   </div>
 </template>
 
 <script>
-
-  import Home from '@/views/Home.vue'
-  import {defineComponent} from "vue";
-
-  export default defineComponent({
-    name: 'App',
-    components: {Home}
-  })
-
-
+export default {
+  name: 'App'
+}
 </script>
-
 <style>
 
 </style>
