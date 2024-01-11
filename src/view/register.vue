@@ -92,7 +92,6 @@
 
 import {register} from "@/api/login";
 import router from "@/router";
-import {ElMessage} from "element-plus";
 
 const ruleForm = reactive({
   username: '',
@@ -125,7 +124,7 @@ function handleRegister(){
       ElMessage({
         message:"注册完成，返回登录",
         type: "success",
-        onClose: () =>{router.push('/')}
+        onClose: () =>{router.push('/Login')}
       })
     }
   }).catch(err => {

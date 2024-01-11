@@ -77,7 +77,6 @@
 <script setup>
   import {login} from "@/api/login";
   import router from "@/router";
-  import {ElMessage} from "element-plus";
 
   const loginForm = reactive({
     username: '',
@@ -104,6 +103,12 @@
             }
           })
         }
+    }).catch(err =>{
+      ElMessage({
+        message: "登录失败",
+        type: 'error'
+      })
+      console.log(err)
     })
   }
 </script>

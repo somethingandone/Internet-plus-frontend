@@ -6,7 +6,7 @@
         </div>
         <div id="info">
           <span>
-            欢迎{{username}}
+            欢迎使用
           </span>
         </div>
       </el-header>
@@ -42,7 +42,6 @@
 
 import {useRouter} from "vue-router";
 const router = useRouter()
-const username = "some"
 </script>
 
 

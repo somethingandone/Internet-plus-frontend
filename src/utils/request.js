@@ -4,8 +4,12 @@ import {ElMessage} from "element-plus";
 
 
 const request = axios.create({
-    baseURL: 'http://127.0.0.1:3456',
-    timeout: 60000
+    baseURL: 'http://localhost:3456',
+    timeout: 60000,
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
 })
 
 request.interceptors.request.use(
@@ -13,6 +17,7 @@ request.interceptors.request.use(
         if(localStorage.token){
             config.headers.Authorization=localStorage.getItem("token")
         }
+        console.log(1111111)
         console.log(config)
         return config
     },
