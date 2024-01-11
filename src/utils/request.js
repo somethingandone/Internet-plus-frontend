@@ -17,7 +17,6 @@ request.interceptors.request.use(
         if(localStorage.token){
             config.headers.Authorization=localStorage.getItem("token")
         }
-        console.log(1111111)
         console.log(config)
         return config
     },
@@ -28,7 +27,7 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
     res=>{
-        if(res.data.code===20006){
+        if(res.data.code===2000){
             ElMessage({
                 message:"登录过期，请重新登录",
                 type:"error"
