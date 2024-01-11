@@ -4,7 +4,7 @@
         <div id="title">
           外规内规匹配平台
         </div>
-        <div id="info">
+        <div id="info" @click="logOut">
           <span>
             欢迎使用
           </span>
@@ -42,6 +42,11 @@
 
 import {useRouter} from "vue-router";
 const router = useRouter()
+
+function logOut(){
+  localStorage.removeItem("token")
+  router.push("/Login")
+}
 </script>
 
 

@@ -1,7 +1,9 @@
 <template>
   <div id="container">
     <div id="input">
+      <p class="listTitle">外规列表</p>
       <el-collapse accordion>
+
         <el-collapse-item v-for="(ex, index) in rel.arr"
                           :key="index"
                           :title="showTitle(ex.title)"
@@ -13,9 +15,11 @@
       </el-collapse>
     </div>
     <div id="result">
+      <p class="listTitle">内规匹配结果</p>
       <el-collapse>
         <el-collapse-item v-for="(res, index) in result.arr" :key="index" :title="res.fileName" style="border-radius: 0">
           <p>{{ res.text }}</p>
+          <p>相关性：{{ res.similarity}}</p>
         </el-collapse-item>
       </el-collapse>
     </div>
@@ -44,7 +48,7 @@ const showTitle = (title) => {
   if(window.screen.width<900){
     return title.length>15?title.substr(0,15)+'...':title
   }
-  return title.length>25?title.substr(0,25)+'...':title
+  return title.length>40?title.substr(0,40)+'...':title
 }
 const getExContent = (id, content, title)=>{
   const arr = {
@@ -59,6 +63,7 @@ const matcher = (title, text) => {
     title: title,
     text: text
   }
+  result.arr = []
   match(data).then((res) => {
     result.arr = res.data.data
   })
@@ -72,6 +77,11 @@ const matcher = (title, text) => {
 .look{
   color: #6b74d1;
   text-underline: #181818;
+}
+.listTitle{
+  text-align: center;
+  letter-spacing: 1rem;
+  font-weight: bold;
 }
 #input {
   width: 50%;
@@ -93,27 +103,5 @@ const matcher = (title, text) => {
   height: 100%;
   color: black;
   padding: 0;
-}
-
-@media (max-width:900px){
-  #container {
-    display: block;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-  }
-  #input {
-    width: 100%;
-    height: 50%;
-    border-right: 1px solid #181818;
-    color: black;
-    padding: 10px;
-  }
-  #result {
-    width: 100%;
-    height: 50%;
-    color: black;
-    padding: 0;
-  }
 }
 </style>
