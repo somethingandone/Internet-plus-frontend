@@ -81,7 +81,7 @@
           </el-form-item>
 
           <el-form-item class="tips">
-            <router-link to="/">已有账号？立即登录</router-link>
+            <router-link to="/Login">已有账号？立即登录</router-link>
           </el-form-item>
         </el-form>
       </div>
